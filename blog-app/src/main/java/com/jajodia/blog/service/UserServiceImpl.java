@@ -3,6 +3,7 @@ package com.jajodia.blog.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,35 +18,49 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
+	//create user only when password and confirm password matches
 	@Override
 	public UserDto createUser(UserDto userDto) {
+		
 		if(userDto.getPassword().equals(userDto.getConfPassword()))
 		{
-
-		User user = this.dtoToUser(userDto);
-		User savedUser= this.userRepository.save(user);
-		return this.userToDto(savedUser);
+			User user = this.dtoToUser(userDto);
+			User savedUser= this.userRepository.save(user);
+			return this.userToDto(savedUser);
 		}
-		else {
+		else 
+		{
 			throw new PasswordMismatchException("Please use same password in confirm password field");
 		}
 	}
 
+	//update user 
 	@Override
 	public UserDto updateUSer(UserDto userDto, int id) {
 		User user = userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User"," id ", id));
-		user.setName(userDto.getName());
-		user.setEmail(userDto.getEmail());
-		user.setAbout(userDto.getAbout());
-		user.setPassword(userDto.getPassword());
-		user.setConfPassword(userDto.getConfPassword());
-		User updatedUser = userRepository.save(user); 
-		UserDto userDto1 = userToDto(updatedUser);
-		return userDto1 ;
+		if(userDto.getPassword().equals(userDto.getConfPassword()))
+		{
+			user.setName(userDto.getName());
+			user.setEmail(userDto.getEmail());
+			user.setAbout(userDto.getAbout());
+			user.setPassword(userDto.getPassword());
+			user.setConfPassword(userDto.getConfPassword());
+			User updatedUser = userRepository.save(user); 
+			UserDto userDto1 = userToDto(updatedUser);
+			return userDto1 ;
+		}
+		else 
+		{
+			throw new PasswordMismatchException("Please use same password in confirm password field");
+		}
 				
 	}
 
+	//get user by ID
 	@Override
 	public UserDto getUserById(int id) {
 		User user = userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User"," id ", id));
@@ -53,6 +68,7 @@ public class UserServiceImpl implements UserService {
 		return userDto;
 	}
 
+	//get list of all users
 	@Override
 	public List<UserDto> getAllUser() {
 		List<User> users=userRepository.findAll();
@@ -60,32 +76,37 @@ public class UserServiceImpl implements UserService {
 		return userDtos;
 	}
 
+	//Delete user by ID
 	@Override
 	public void deleteUserById(int id) {
 		User user = userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User"," id ", id));
 		userRepository.delete(user);
 	}
 	
+	//converting userDto entity to user entity
 	public User dtoToUser(UserDto userDto)
 	{
-		User user = new User();
-		user.setId(userDto.getId());
-		user.setName(userDto.getName());
-		user.setPassword(userDto.getPassword());		
-		user.setConfPassword(userDto.getConfPassword());		
-		user.setEmail(userDto.getEmail());
-		user.setAbout(userDto.getAbout());
+		User user = this.modelMapper.map(userDto, User.class);
+		
+		//		user.setId(userDto.getId());
+		//		user.setName(userDto.getName());
+		//		user.setPassword(userDto.getPassword());		
+		//		user.setConfPassword(userDto.getConfPassword());		
+		//		user.setEmail(userDto.getEmail());
+		//		user.setAbout(userDto.getAbout());
 		return user;
 	}
+	
+	//converting user entity to userDto entity
 	public UserDto userToDto(User user)
 	{
-		UserDto userDto = new UserDto();
-		userDto.setId(user.getId());
-		userDto.setName(user.getName());
-		userDto.setPassword(user.getPassword());		
-		userDto.setConfPassword(user.getConfPassword());		
-		userDto.setEmail(user.getEmail());
-		userDto.setAbout(user.getAbout());
+		UserDto userDto = this.modelMapper.map(user, UserDto.class);
+		//		userDto.setId(user.getId());
+		//		userDto.setName(user.getName());
+		//		userDto.setPassword(user.getPassword());		
+		//		userDto.setConfPassword(user.getConfPassword());		
+		//		userDto.setEmail(user.getEmail());
+		//		userDto.setAbout(user.getAbout());
 		return userDto;
 	}
 

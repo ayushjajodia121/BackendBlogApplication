@@ -2,6 +2,10 @@ package com.jajodia.blog.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4249433590339311269L;
 	String resourceName;
 	String fieldName;
 	int fieldValue;

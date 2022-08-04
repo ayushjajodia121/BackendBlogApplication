@@ -6,9 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 
 
@@ -20,18 +17,17 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@NotBlank
+	
 	@Column(name="user_name")
 	private String name;
 	
-	@Email(message="Enter email in proper format")
+	
 	@Column(name="user_email")
 	private String email;
 	
-	@Pattern(regexp="^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",message="please enter Minimum eight characters, at least one letter and one number")
 	private String password;
 	
-	@NotBlank(message="this field should match password field")
+	
 	private String confPassword;
 	
 	@Column(name="about_user")
@@ -90,9 +86,7 @@ public class User {
 		super();
 	}
 
-	public User(@NotBlank String name, @Email(message = "Enter email in proper format") String email,
-			@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "please enter Minimum eight characters, at least one letter and one number") String password,
-			@NotBlank(message = "this field should match password field") String confPassword, String about) {
+	public User(String name, String email, String password, String confPassword, String about) {
 		super();
 		this.name = name;
 		this.email = email;
@@ -100,6 +94,8 @@ public class User {
 		this.confPassword = confPassword;
 		this.about = about;
 	}
+
+	
 	
 	
 	
