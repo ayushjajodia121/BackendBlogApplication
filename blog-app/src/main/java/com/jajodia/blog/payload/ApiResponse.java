@@ -21,10 +21,10 @@ public class ApiResponse {
 	private String timeOfOccurence;
 	
 	
-	public String getTimeOfException() {
+	public String getTimeOfOccurence() {
 		return timeOfOccurence;
 	}
-	public void setTimeOfException(String timeOfException) {
+	public void setTimeOfOccurence(String timeOfException) {
 		this.timeOfOccurence = timeOfException;
 	}
 	public ApiResponse() {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jajodia.blog.payload.ApiResponse;
 import com.jajodia.blog.payload.CategoryDto;
-import com.jajodia.blog.service.CategoryService;
+import com.jajodia.blog.serviceImpl.CategoryService;
 
 @RestController
 @RequestMapping("/api/v1/category")
