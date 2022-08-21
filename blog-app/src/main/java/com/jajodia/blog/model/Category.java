@@ -12,16 +12,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="categories")
+@Table(name="categories",uniqueConstraints = {@UniqueConstraint(name="uk_category_title",columnNames = {"category_title"})})
 public class Category {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@Column(name="categoey_title")
+	@Column(name="category_title")
 	private String categoryTitle;
 	
 	@Column(name="category_description")

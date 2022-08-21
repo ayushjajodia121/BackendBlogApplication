@@ -1,5 +1,6 @@
 package com.jajodia.blog.exception;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,5 +44,20 @@ public class GlobalExceptionHandler {
 			resp.put(fieldName, message);
 		});
 		return new ResponseEntity<Map<String,String>>(resp,HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+	public ResponseEntity<ApiResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex)
+	{
+		String message = ex.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message+": Title Already Exists. ",false);
+		return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.NOT_ACCEPTABLE);	
+	}
+	@ExceptionHandler(CategoryNotFoundException.class)
+	public ResponseEntity<ApiResponse> 	categoryNotFoundExceptionHandler(CategoryNotFoundException ex)
+	{
+		String message = ex.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message,false);
+		return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.NOT_FOUND);
 	}
 }

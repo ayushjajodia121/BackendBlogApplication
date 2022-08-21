@@ -2,18 +2,16 @@ package com.jajodia.blog.service;
 
 import java.util.List;
 
-import com.jajodia.blog.model.Post;
-import com.jajodia.blog.payload.CategoryDto;
 import com.jajodia.blog.payload.PostDto;
-import com.jajodia.blog.payload.UserDto;
+import com.jajodia.blog.payload.PostResponse;
 
 public interface PostService {
 	
 	//create post
-	PostDto createPost(PostDto postDto,int categoryId,int userId);
+	PostDto createPost(PostDto postDto,int userId,String categoryName);
 	
 	//edit post
-	PostDto updatePost(PostDto postDto,int postId,int categoryId,int userId);
+	PostDto updatePost(PostDto postDto, int postId, String categoryName, int userId);
 	
 	//delete post
 	void deletePost(int id);
@@ -22,15 +20,16 @@ public interface PostService {
 	PostDto fetchPostById(int id);
 	
 	//get All posts
-	List<PostDto> fetchAllPosts();
+	PostResponse fetchAllPosts(int pageSize,int pageNumber, String sortBy, String sortDir);
 	
 	//get all post by user
-	List<PostDto> fetchPostsByUser(int userId);
+	PostResponse fetchPostsByUser(int userId,int pageSize,int pageNumber);
 	
 	//get all post by category
-	List<PostDto> fetchPostsByCategory(int categoryId);
+	PostResponse fetchPostsByCategory(int categoryId,int pageSize,int pageNumber);
 	
 	//search posts by title name
-	List<PostDto> fetchByKeyword(String keyword);
+	PostResponse fetchByKeyword(String keyword,int pageSize,int pageNumber);
+
 
 }

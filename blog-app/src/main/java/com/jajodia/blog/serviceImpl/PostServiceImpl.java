@@ -6,13 +6,19 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.jajodia.blog.exception.CategoryNotFoundException;
 import com.jajodia.blog.exception.ResourceNotFoundException;
 import com.jajodia.blog.model.Category;
 import com.jajodia.blog.model.Post;
 import com.jajodia.blog.model.User;
 import com.jajodia.blog.payload.PostDto;
+import com.jajodia.blog.payload.PostResponse;
 import com.jajodia.blog.repository.CategoryRepository;
 import com.jajodia.blog.repository.PostRepository;
 import com.jajodia.blog.repository.UserRepository;
@@ -35,11 +41,12 @@ public class PostServiceImpl implements PostService {
 	
 	//************************************** CREATE POST *****************************************//
 	@Override
-	public PostDto createPost(PostDto postDto,int userId,int categoryId) 
+	public PostDto createPost(PostDto postDto,int userId,String categoryName) 
 	{
 		Post post = modelMapper.map(postDto, Post.class);
 		User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User","user_id",userId));
-		Category category= categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","category_id",categoryId));
+		Category category= categoryRepository.findByCategoryTitle(categoryName);
+		if(category!=null ) {
 		
 		post.setImageName("default.png");
 		post.setAddedDate(new Date());
@@ -48,26 +55,32 @@ public class PostServiceImpl implements PostService {
 		post.setCategory(category);
 		Post savedPost = postRepository.save(post);
 		return modelMapper.map(savedPost, PostDto.class);
+		}else {
+			throw new CategoryNotFoundException("Category","CategoryName: ",categoryName);
+		}
 	}
 
 	//************************************* UPDATE POST ********************************************// 
 	@Override
-	public PostDto updatePost(PostDto postDto, int postId,int categoryId,int userId) 
+	public PostDto updatePost(PostDto postDto, int postId, String categoryName, int userId) 
 	{
 		Post oldPost = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","postId: ",postId));
-		Category category = categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","categoryId: ",categoryId));
 		User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User","userId: ",userId));
-		
-		oldPost.setTitle(postDto.getTitle());
-		oldPost.setCategory(category);
-		oldPost.setContent(postDto.getContent());
-		oldPost.setImageName(postDto.getImageName());
-		oldPost.setUser(user);
-		oldPost.setAddedDate(new Date());
-		
-		PostDto newPostDto = modelMapper.map(oldPost, PostDto.class);
-		
-		return newPostDto;
+		Category category = categoryRepository.findByCategoryTitle(categoryName);
+		if(category != null)
+		{	
+			oldPost.setTitle(postDto.getTitle());
+			oldPost.setCategory(category);
+			oldPost.setContent(postDto.getContent());
+			oldPost.setImageName(postDto.getImageName());
+			oldPost.setUser(user);
+			oldPost.setAddedDate(new Date());
+			PostDto newPostDto = modelMapper.map(oldPost, PostDto.class);
+			return newPostDto;
+		}
+		else {
+			throw new CategoryNotFoundException("Category","CategoryName: ",categoryName);
+		}
 	}
 
 	//************************************* DELETE POST BY ID *****************************************//
@@ -87,39 +100,93 @@ public class PostServiceImpl implements PostService {
 
 	//************************************* GET ALL POSTS **********************************************//
 	@Override
-	public List<PostDto> fetchAllPosts() 
+	public PostResponse fetchAllPosts(int pageSize,int pageNumber,String sortBy,String sortDir) 
 	{
-		List<Post> posts = postRepository.findAll();
+		Sort sort = null;
+		if(sortDir.equalsIgnoreCase("asc"))
+		{
+			sort = Sort.by(sortBy).ascending();
+		}else {
+			sort = Sort.by(sortBy).descending();
+		}
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+		Page<Post> pagePosts = postRepository.findAll(p);
+		List<Post> posts = pagePosts.getContent();
 		List<PostDto> postDtos = posts.stream().map((post)->modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-		return postDtos;
+		
+		PostResponse resp = new PostResponse();
+		resp.setPosts(postDtos);
+		resp.setPageNumber(pagePosts.getNumber());
+		resp.setPageSize(pagePosts.getSize());
+		resp.setTotalElements((int)pagePosts.getTotalElements());
+		resp.setTotalPages(pagePosts.getTotalPages());
+		resp.setLastPage(pagePosts.isLast());
+		return resp;
 	}
 	
 	//************************************* GET POSTS BY A USER ****************************************//
 	@Override
-	public List<PostDto> fetchPostsByUser(int userId) 
+	public PostResponse fetchPostsByUser(int userId,int pageSize,int pageNumber) 
 	{
+		Pageable p = PageRequest.of(pageNumber, pageSize);
 		User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("Uer","CategoryId: ",userId));
-		List<Post> posts = postRepository.findByUser(user); 
+		Page<Post> pagePosts = postRepository.findByUser(user,p); 
+		List<Post> posts = pagePosts.getContent();
 		List<PostDto> postsByUser = posts.stream().map((post)->modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-		return postsByUser;
+		
+		PostResponse resp = new PostResponse();
+		
+		resp.setPosts(postsByUser);
+		resp.setPageNumber(pagePosts.getNumber());
+		resp.setPageSize(pagePosts.getSize());
+		resp.setTotalElements((int)pagePosts.getTotalElements());
+		resp.setTotalPages(pagePosts.getTotalPages());
+		resp.setLastPage(pagePosts.isLast());
+		return resp;
 	}
 
 	//************************************* GET POSTS BY CATEGORY ****************************************//
 	@Override
-	public List<PostDto> fetchPostsByCategory(int categoryId) 
+	public PostResponse fetchPostsByCategory(int categoryId,int pageSize,int pageNumber) 
 	{
+		Pageable p = PageRequest.of(pageNumber, pageSize);
 		Category category = categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","CategoryId: ",categoryId));
-		List<Post> posts = postRepository.findByCategory(category); 
+		Page<Post> pagePosts = postRepository.findByCategory(category,p); 
+		List<Post> posts = pagePosts.getContent();
 		List<PostDto> postsByCategory = posts.stream().map((post)->modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-		return postsByCategory;
+		
+		PostResponse resp = new PostResponse();
+		
+		resp.setPosts(postsByCategory);
+		resp.setPageNumber(pagePosts.getNumber());
+		resp.setPageSize(pagePosts.getSize());
+		resp.setTotalElements((int)pagePosts.getTotalElements());
+		resp.setTotalPages(pagePosts.getTotalPages());
+		resp.setLastPage(pagePosts.isLast());
+		
+		return resp;
 	}
 
 	//************************************* SEARCH POSTS BY NAME OF TITLE *********************************//
 	@Override
-	public List<PostDto> fetchByKeyword(String keyword) {
-		List<Post> posts = postRepository.findByTitleContaining(keyword);
+	public PostResponse fetchByKeyword(String keyword,int pageSize,int pageNumber) {
+		
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+		
+		Page<Post> pagePosts = postRepository.findByTitleContaining(keyword,p);
+		List<Post> posts = pagePosts.getContent();
 		List<PostDto> postsByName = posts.stream().map((post)->modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-		return postsByName;
+		PostResponse resp = new PostResponse();
+		
+		resp.setPosts(postsByName);
+		resp.setPageNumber(pagePosts.getNumber());
+		resp.setPageSize(pagePosts.getSize());
+		resp.setTotalElements((int)pagePosts.getTotalElements());
+		resp.setTotalPages(pagePosts.getTotalPages());
+		resp.setLastPage(pagePosts.isLast());
+		
+		return resp;
 	}
+
 
 }

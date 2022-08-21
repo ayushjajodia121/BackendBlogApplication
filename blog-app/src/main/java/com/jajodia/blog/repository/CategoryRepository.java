@@ -9,5 +9,7 @@ import com.jajodia.blog.model.Category;
 public interface CategoryRepository extends JpaRepository<Category, Integer>{
 	
 	public List<Category> findByCategoryTitleContaining(String name );
+	
+	Category findByCategoryTitle(String name);
 
 }

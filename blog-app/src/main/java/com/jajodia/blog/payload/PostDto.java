@@ -6,6 +6,9 @@ import javax.validation.constraints.NotEmpty;
 
 public class PostDto {
 	
+	
+	private int postId;
+	
 	@NotEmpty
 	private String title;
 	
@@ -24,9 +27,12 @@ public class PostDto {
 		super();
 	}
 
-	public PostDto(@NotEmpty String title, @NotEmpty String content, Date addedDate, String imageName, UserDto user,
-			CategoryDto category) {
+	
+
+	public PostDto(int postId, @NotEmpty String title, @NotEmpty String content, Date addedDate, String imageName,
+			UserDto user, CategoryDto category) {
 		super();
+		this.postId = postId;
 		this.title = title;
 		this.content = content;
 		this.addedDate = addedDate;
@@ -34,6 +40,21 @@ public class PostDto {
 		this.user = user;
 		this.category = category;
 	}
+
+
+	
+
+	public int getPostId() {
+		return postId;
+	}
+
+
+
+	public void setPostId(int postId) {
+		this.postId = postId;
+	}
+
+
 
 	public Date getAddedDate() {
 		return addedDate;

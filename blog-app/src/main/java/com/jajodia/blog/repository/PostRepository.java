@@ -2,6 +2,8 @@ package com.jajodia.blog.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.jajodia.blog.model.Category;
@@ -10,7 +12,7 @@ import com.jajodia.blog.model.User;
 
 public interface PostRepository extends JpaRepository<Post, Integer> 
 {
-	List<Post> findByUser(User user);
-	List<Post> findByCategory(Category category);
-	List<Post> findByTitleContaining(String name);
+	Page<Post> findByUser(User user,Pageable p);
+	Page<Post> findByCategory(Category category,Pageable p);
+	Page<Post> findByTitleContaining(String name,Pageable p);
 }

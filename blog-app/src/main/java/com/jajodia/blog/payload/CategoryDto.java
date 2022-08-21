@@ -1,5 +1,6 @@
 package com.jajodia.blog.payload;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 
 public class CategoryDto {
@@ -7,6 +8,7 @@ public class CategoryDto {
 	private int id;
 	
 	@NotEmpty
+	@Column(unique=true)
 	private String categoryTitle;
 	
 	@NotEmpty
