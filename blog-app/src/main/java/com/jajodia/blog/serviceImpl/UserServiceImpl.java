@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 		return userDtos;
 	}
 
-	//Delete user by ID
+	//************************************ Delete user by ID ********************************************************//
 	@Override
 	public void deleteUserById(int id) {
 		User user = userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User"," id ", id));

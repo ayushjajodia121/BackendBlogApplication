@@ -1,6 +1,5 @@
 package com.jajodia.blog.service;
 
-import java.util.List;
 
 import com.jajodia.blog.payload.PostDto;
 import com.jajodia.blog.payload.PostResponse;
