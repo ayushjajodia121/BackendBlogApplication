@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jajodia.blog.exception.PasswordMismatchException;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	//create user only when password and confirm password matches
 	@Override
@@ -29,6 +33,9 @@ public class UserServiceImpl implements UserService {
 		
 		if(userDto.getPassword().equals(userDto.getConfPassword()))
 		{
+			String encodedPassword = this.passwordEncoder.encode(userDto.getPassword());
+			userDto.setPassword(encodedPassword);
+			userDto.setConfPassword(encodedPassword);
 			User user = this.dtoToUser(userDto);
 			User savedUser= this.userRepository.save(user);
 			return this.userToDto(savedUser);
