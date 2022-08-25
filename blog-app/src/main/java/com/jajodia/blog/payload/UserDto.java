@@ -6,6 +6,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UserDto {
 	
 	private int id;
@@ -20,6 +22,7 @@ public class UserDto {
 	private String email;
 	
 	@Pattern(regexp="^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",message="please enter Minimum eight characters, at least one letter and one number")
+	
 	private String password;
 	
 	@NotEmpty(message="this field should match password field")
@@ -66,6 +69,7 @@ public class UserDto {
 		this.email = email;
 	}
 	
+//	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
@@ -73,6 +77,7 @@ public class UserDto {
 		this.password = password;
 	}
 	
+//	@JsonIgnore
 	public String getConfPassword() {
 		return confPassword;
 	}
