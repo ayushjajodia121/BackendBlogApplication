@@ -94,6 +94,13 @@ public class UserServiceImpl implements UserService {
 		userDto.setConfPassword("*******");
 		return userDto;
 	}
+	//****************************************** FETCH USER BY USERNAME *************************************************//
+	
+	public UserDto fetchUserByUsername(String userName) {
+		Optional<User> user = userRepository.findByEmail(userName);
+		UserDto userDto = userToDto(user.get());
+		return userDto;
+	}
 
 	//******************************************** GET LIST OF ALL USERS **************************************************//
 	@Override

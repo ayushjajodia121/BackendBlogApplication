@@ -16,5 +16,7 @@ public interface UserService {
 	
 	void deleteUserById(int id);
 	
+	UserDto fetchUserByUsername(String userName);
+	
 
 }

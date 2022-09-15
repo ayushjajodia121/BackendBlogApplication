@@ -144,6 +144,14 @@ public class User implements UserDetails{
 		this.confPassword = confPassword;
 		this.about = about;
 	}
+	
+	//**************************************** ToString Method ****************************************************//
+	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", confPassword="
+				+ confPassword + ", about=" + about + ", posts=" + posts + ", roles=" + roles + "]";
+	}
 
 	//**************************************** UserDetails Methods **********************************************//
 	@Override
@@ -152,6 +160,7 @@ public class User implements UserDetails{
 		List<SimpleGrantedAuthority> authorities = this.roles.stream().map((role)->new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
 		return authorities;
 	}
+
 
 	@Override
 	public String getUsername() {	
