@@ -89,7 +89,6 @@ public class UserDto {
 	}
 	
 	
-//	@JsonIgnore
 	public String getConfPassword() {
 		return confPassword;
 	}

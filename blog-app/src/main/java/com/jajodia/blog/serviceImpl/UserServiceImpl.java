@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 			String encodedPassword = this.passwordEncoder.encode(userDto.getPassword());
 			userDto.setPassword(encodedPassword);
 //			userDto.setConfPassword(encodedPassword);
-			
+
 			User user = this.dtoToUser(userDto);
 			Role roleNormal = this.roleRepo.findById(AppConstants.ROLE_NORMAL).get();
 			user.getRoles().add(roleNormal);
