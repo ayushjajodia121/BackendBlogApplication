@@ -62,9 +62,10 @@ public class PostServiceImpl implements PostService {
 
 	//************************************* UPDATE POST ********************************************// 
 	@Override
-	public PostDto updatePost(PostDto postDto, int postId, String categoryName, int userId) 
+	public PostDto updatePost(PostDto postDto, int postId, int userId, String categoryName) 
 	{
 		Post oldPost = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","postId: ",postId));
+	//	Category oldPostCategory = oldPost.getCategory();  get category assigned to particular 
 		User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User","userId: ",userId));
 		Category category = categoryRepository.findByCategoryTitle(categoryName);
 		if(category != null)
@@ -75,7 +76,8 @@ public class PostServiceImpl implements PostService {
 			oldPost.setImageName(postDto.getImageName());
 			oldPost.setUser(user);
 			oldPost.setAddedDate(new Date());
-			PostDto newPostDto = modelMapper.map(oldPost, PostDto.class);
+			Post updatedPost = postRepository.save(oldPost);
+			PostDto newPostDto = modelMapper.map(updatedPost, PostDto.class);
 			return newPostDto;
 		}
 		else {

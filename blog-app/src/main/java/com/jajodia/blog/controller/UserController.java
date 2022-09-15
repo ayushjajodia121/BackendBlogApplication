@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,7 @@ public class UserController {
 		return ResponseEntity.ok(updatedUser);
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/deleteUser/{id}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable("id") int userId)
 	{
@@ -50,7 +52,8 @@ public class UserController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse("User Deleted Successfully",true),HttpStatus.OK);
 	}
 	
-	//fetch ALl USers
+	//fetch All USers
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getAllUsers")
 	public ResponseEntity<List<UserDto>> fetchAllUsers()
 	{
@@ -58,6 +61,7 @@ public class UserController {
 	}
 	
 	//fetch User By ID
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getUserById/{id}")
 	public ResponseEntity<UserDto> fetchUserById(@PathVariable int id)
 	{

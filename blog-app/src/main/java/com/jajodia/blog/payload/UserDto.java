@@ -1,10 +1,15 @@
 package com.jajodia.blog.payload;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.jajodia.blog.model.Role;
 
 public class UserDto {
 	
@@ -20,6 +25,7 @@ public class UserDto {
 	private String email;
 	
 	@Pattern(regexp="^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",message="please enter Minimum eight characters, at least one letter and one number")
+	
 	private String password;
 	
 	@NotEmpty(message="this field should match password field")
@@ -29,22 +35,30 @@ public class UserDto {
 	@Size(min=4,message="enter name more than 4 chrachters")
 	private String about;
 	
+	private Set<Role> roles = new HashSet<>();
+
+	
 	public UserDto() {
 		super();
 	}
 	
-	public UserDto(@NotBlank String name, @Email(message = "Enter email in proper format") String email,
+	public UserDto(@NotBlank @Size(min = 4, message = "enter name more than 4 chrachters") String name,
+			@Email(message = "Enter email in proper format") String email,
 			@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "please enter Minimum eight characters, at least one letter and one number") String password,
-			@NotBlank(message = "this field should match password field") String confPassword, String about) {
+			@NotEmpty(message = "this field should match password field") String confPassword,
+			@Size(min = 4, message = "enter name more than 4 chrachters") String about, Set<Role> roles) {
 		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.confPassword = confPassword;
 		this.about = about;
+		this.roles = roles;
 	}
-	
-	
+
+
+
+
 	public int getId() {
 		return id;
 	}
@@ -66,6 +80,7 @@ public class UserDto {
 		this.email = email;
 	}
 	
+//	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
@@ -73,6 +88,8 @@ public class UserDto {
 		this.password = password;
 	}
 	
+	
+//	@JsonIgnore
 	public String getConfPassword() {
 		return confPassword;
 	}
@@ -85,6 +102,14 @@ public class UserDto {
 	}
 	public void setAbout(String about) {
 		this.about = about;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 	
 

@@ -10,7 +10,7 @@ public interface PostService {
 	PostDto createPost(PostDto postDto,int userId,String categoryName);
 	
 	//edit post
-	PostDto updatePost(PostDto postDto, int postId, String categoryName, int userId);
+	PostDto updatePost(PostDto postDto, int postId, int userId, String categoryName);
 	
 	//delete post
 	void deletePost(int id);

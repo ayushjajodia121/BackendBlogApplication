@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jajodia.blog.exception.InvalidCredentialsException;
 import com.jajodia.blog.payload.JWTAuthRequest;
 import com.jajodia.blog.payload.JWTAuthResponse;
 import com.jajodia.blog.security.JWTTokenHelper;
@@ -59,7 +60,11 @@ public class AuthController {
 	private void authenticate(String username, String password) {
 
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+		try {
 		this.authenticationManager.authenticate(authenticationToken);
-	}
+		}catch(BadCredentialsException e) {
+			throw new InvalidCredentialsException("Invalid USername or Password!!");
+		}
+		}
 
 }

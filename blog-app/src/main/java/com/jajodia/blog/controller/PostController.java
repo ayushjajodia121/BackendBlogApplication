@@ -1,7 +1,16 @@
 package com.jajodia.blog.controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +21,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jajodia.blog.config.AppConstants;
 import com.jajodia.blog.payload.ApiResponse;
 import com.jajodia.blog.payload.PostDto;
 import com.jajodia.blog.payload.PostResponse;
+import com.jajodia.blog.service.FileService;
 import com.jajodia.blog.service.PostService;
+
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -26,6 +38,11 @@ public class PostController
 	@Autowired
 	private PostService postService;
 	
+	@Autowired
+	private FileService fileService;
+	
+	@Value("${project.image}")
+	private String path;
 	//************************************* CREATE POST API ********************************************//
 	@PostMapping("/user/{userId}/categoryName/{categoryName}/savePost")
 	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto,@PathVariable int userId,@PathVariable String categoryName)
@@ -42,7 +59,7 @@ public class PostController
 			@PathVariable int userId,
 			@PathVariable String categoryName)
 	{
-		PostDto updatedPostDto =  postService.updatePost(postDto, postId, categoryName, userId);
+		PostDto updatedPostDto =  postService.updatePost(postDto, postId, userId, categoryName);
 		return new ResponseEntity<PostDto>(updatedPostDto,HttpStatus.OK);
 	}
 	
@@ -110,5 +127,31 @@ public class PostController
 	{
 		PostResponse postsByName = postService.fetchByKeyword(keyword,pageSize,pageNumber);
 		return new ResponseEntity<PostResponse>(postsByName,HttpStatus.OK);
+	}
+	
+	//****************************************** SAVE POST IMAGE ************************************************************//
+	@PostMapping("image/upload/{postId}/{userId}/{categoryName}")
+	public ResponseEntity<PostDto> uploadPostImage(@RequestParam("image") MultipartFile image,
+				@PathVariable int postId,
+				@PathVariable int userId,
+				@PathVariable String categoryName
+			) throws IOException{
+		String imageName = this.fileService.uploadImage(path, image);
+		PostDto postDtoById = this.postService.fetchPostById(postId);
+		postDtoById.setImageName(imageName);
+		PostDto updatedPost = postService.updatePost(postDtoById, postId, userId, categoryName);
+		return new ResponseEntity<PostDto>(updatedPost,HttpStatus.OK);
+	}
+	
+	//******************************************** METHOD TO SERVE IMAGE FILES ************************************************//
+	
+	@GetMapping(value="/profiles/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
+	public void downloadImage(
+				@PathVariable("imageName") String imageName,
+				HttpServletResponse response
+			) throws IOException {
+		InputStream resource = this.fileService.getResource(path, imageName);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource,response.getOutputStream());
 	}
 }

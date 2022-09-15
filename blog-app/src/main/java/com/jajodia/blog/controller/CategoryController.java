@@ -1,10 +1,13 @@
-package com.jajodia.blog.controller;
+ package com.jajodia.blog.controller;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +53,7 @@ public class CategoryController {
 	}
 	
 	//create category
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/createCategory")
 	public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto)
 	{
@@ -58,6 +62,7 @@ public class CategoryController {
 	}
 	
 	//update Category by id
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/updateCategory/{id}")
 	public ResponseEntity<CategoryDto> updatCategory(@RequestBody CategoryDto categoryDto,@PathVariable int id)
 	{
@@ -66,6 +71,8 @@ public class CategoryController {
 	}
 	
 	//delete Category by id
+//	@PreAuthorize("hasRole('ADMIN')")
+	@RolesAllowed("ADMIN")
 	@DeleteMapping("/deleteById/{id}")
 	public ResponseEntity<ApiResponse> deleteCategory(@PathVariable int id)
 	{
