@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 		{
 			String encodedPassword = this.passwordEncoder.encode(userDto.getPassword());
 			userDto.setPassword(encodedPassword);
-			userDto.setConfPassword(encodedPassword);
+//			userDto.setConfPassword(encodedPassword);
 			User user = this.dtoToUser(userDto);
 			User savedUser= this.userRepository.save(user);
 			return this.userToDto(savedUser);
