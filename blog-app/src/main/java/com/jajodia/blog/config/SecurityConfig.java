@@ -16,12 +16,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.jajodia.blog.security.JWTAuthenticationEntryPoint;
 import com.jajodia.blog.security.JwtAutenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @EnableGlobalAuthentication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
@@ -56,14 +59,15 @@ public class SecurityConfig {
 //        return new CustomUserDetailService();
 //    }
 	
+	
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
         	.csrf()
         	.disable()
             .authorizeHttpRequests()
-            .antMatchers("/api/v1/auth/login").permitAll()
-            .antMatchers("/api/v1/users/createUser").permitAll()
+            .antMatchers(AppConstants.PUBLIC_URLS).permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
             .anyRequest()
             .authenticated()
             .and()

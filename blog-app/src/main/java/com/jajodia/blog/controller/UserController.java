@@ -21,6 +21,9 @@ import com.jajodia.blog.payload.ApiResponse;
 import com.jajodia.blog.payload.UserDto;
 import com.jajodia.blog.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -53,6 +56,8 @@ public class UserController {
 	}
 	
 	//fetch All USers
+//	@Operation(summary = "Fetch all Users stored in database ", description = "GET user")
+//	@SecurityRequirement(name = "Bearer Authentication")
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getAllUsers")
 	public ResponseEntity<List<UserDto>> fetchAllUsers()

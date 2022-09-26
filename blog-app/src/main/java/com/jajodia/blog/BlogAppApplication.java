@@ -9,12 +9,46 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.jajodia.blog.config.AppConstants;
 import com.jajodia.blog.model.Role;
 import com.jajodia.blog.repository.RoleRepo;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
+
+@EnableWebMvc
 @SpringBootApplication
+@SecurityScheme(
+		  name = "Bearer Authentication",
+		  type = SecuritySchemeType.HTTP,
+		  bearerFormat = "JWT",
+		  scheme = "bearer"
+		)
+@OpenAPIDefinition(
+		  info = @Info(
+		    title = "Blogging Backend Application",
+		    version = "${1.0.0}",
+		    contact = @Contact(
+		      name = "Ayush Jajodia", email = "ayushjajodia121@gmail.com", url = "https://www.baeldung.com"
+		    ),
+		    license = @License(
+		      name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0"
+		    ),
+		    termsOfService = "${tos.uri}",
+		    description = "User,categories,Posts related api for  creating a blog application"
+		  )
+//		  servers = @Server(
+//		    url = "http:localhost:8086/",
+//		    description = "Production"
+//		  )
+		)
 public class BlogAppApplication implements CommandLineRunner {
 	
 	@Autowired

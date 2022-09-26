@@ -13,5 +13,10 @@
     "name": "org.hibernate.dialect.MySQL5InnoDBDialect",
     "type": "java.lang.String",
     "description": "A description for 'org.hibernate.dialect.MySQL5InnoDBDialect'"
+  },
+  {
+    "name": "https",
+    "type": "java.lang.String",
+    "description": "A description for 'https'"
   }
 ]}
