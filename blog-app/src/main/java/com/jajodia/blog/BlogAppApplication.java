@@ -79,9 +79,11 @@ public class BlogAppApplication implements CommandLineRunner {
 			Role roleAdmin = new Role();
 			roleAdmin.setId(AppConstants.ROLE_ADMIN);
 			roleAdmin.setName("ROLE_ADMIN");
-			
-			List<Role> roles = List.of(roleNormal,roleAdmin);
-			List<Role> result = this.roleRepo.saveAll(roles);
+
+			roleRepo.save(roleAdmin);
+			roleRepo.save(roleNormal);
+//			List<Role> roles = List.of(roleNormal,roleAdmin);
+//			List<Role> result = this.roleRepo.saveAll(roles);
 		}catch(Exception e)
 		{
 			e.printStackTrace();

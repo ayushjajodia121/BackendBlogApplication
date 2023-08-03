@@ -10,13 +10,13 @@ import com.jajodia.blog.service.UserService;
 @SpringBootTest
 class BlogAppApplicationTests {
 	
-	@Autowired
-	private UserRepository userRepository;
-
-	
-	@Autowired
-	private UserService userService;
-	
+//	@Autowired
+//	private UserRepository userRepository;
+//
+//
+//	@Autowired
+//	private UserService userService;
+//
 	@Test
 	void contextLoads() {
 	}
@@ -29,13 +29,13 @@ class BlogAppApplicationTests {
 //		System.out.println(repoclassName );
 //		System.out.println(repopackName );
 //	}
-	@Test
-	public void serviceTest()
-	{
-		String className = this.userService.getClass().getName();
-		String packName = this.userService.getClass().getPackageName();
-		System.out.println(className);
-		System.out.println(packName);
-	}
+//	@Test
+//	public void serviceTest()
+//	{
+//		String className = this.userService.getClass().getName();
+//		String packName = String.valueOf(this.userService.getClass().getPackage());
+//		System.out.println(className);
+//		System.out.println(packName);
+//	}
 
 }
