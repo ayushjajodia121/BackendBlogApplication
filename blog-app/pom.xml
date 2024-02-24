@@ -14,7 +14,7 @@
 	<name>blog-app</name>
 	<description>backend apis app for blogging</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -110,6 +110,9 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<image>
+						<name>jajodia/blogapp</name>
+					</image>
 				</configuration>
 			</plugin>
 		</plugins>

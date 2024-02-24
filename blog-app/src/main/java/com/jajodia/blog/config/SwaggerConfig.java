@@ -1,46 +1,63 @@
-package com.jajodia.blog.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-
-@Configuration
-
-public class SwaggerConfig {
-	
-	@Bean
-	public OpenAPI customizeOpenAPI() {
-	    final String securitySchemeName = "bearerAuth";
-	    return new OpenAPI()
-	      .addSecurityItem(new SecurityRequirement()
-	        .addList(securitySchemeName))
-	      .components(new Components()
-	        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-	          .name(securitySchemeName)
-	          .type(SecurityScheme.Type.HTTP)
-	          .scheme("bearer")
-	          .bearerFormat("JWT")));
-	    }
-	
-//	  @Bean
-//	  public OpenAPI springShopOpenAPI() {
-//	      return new OpenAPI()
-//	              .info(new Info().title("Blogging Backend Application").contact(new Contact().name("Ayush Jajodia").url("ayush.com"))
-//	              .description("User,categories,Posts related api for  creating a blog application")
-//	              .version("v1.0.1")
-//	              .license(new License().name("ayush123456789").url("http://springdoc.org")));
-////	              .paths(new Paths().ref);
-//      }
-//	  @Bean
-//	  public GroupedOpenApi api()
-//	  {
-//	      return GroupedOpenApi.builder()
-//	              .group("OpenApiController")
-//	              .packagesToScan("com.jajodia")
-//	              .build();
-//	  }
-}
+//package com.jajodia.blog.config;
+//
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//
+//import springfox.documentation.builders.ApiInfoBuilder;
+//import springfox.documentation.builders.PathSelectors;
+//import springfox.documentation.builders.RequestHandlerSelectors;
+//import springfox.documentation.service.*;
+//import springfox.documentation.spi.DocumentationType;
+//import springfox.documentation.spi.service.contexts.SecurityContext;
+//import springfox.documentation.spring.web.plugins.Docket;
+//import springfox.documentation.swagger2.annotations.EnableSwagger2;
+//
+//import java.util.Arrays;
+//import java.util.List;
+//
+//@Configuration
+//@EnableSwagger2
+//public class SwaggerConfig {
+//
+//	public static final  String AUTHORIZATION_HEADER = "Authorization";
+//
+//	private ApiKey apiKeys(){
+//		return new ApiKey("JWT",AUTHORIZATION_HEADER,"header");
+//	}
+//	private List<SecurityContext> securityContexts(){
+//		return Arrays.asList(SecurityContext.builder().securityReferences(sf()).build());
+//	}
+//	private List<SecurityReference> sf(){
+//		AuthorizationScope scope = new AuthorizationScope("global","accessEverything");
+//		return Arrays.asList(new SecurityReference("scope",new AuthorizationScope[]{scope}));
+//	}
+//	 @Value("${enable.swagger}")
+//	    private boolean enableSwaggerPlugin;
+//
+//	    @Bean
+//	    public Docket api() {
+//	        return new Docket(DocumentationType.SWAGGER_2)
+//	                .select()
+//	                .apis(RequestHandlerSelectors.basePackage("com.psi.ipg.account.controller"))
+//	                .paths(PathSelectors.any())
+//	                .build()
+//	                .securityContexts(securityContexts())
+//					.securitySchemes(Arrays.asList(apiKeys()))
+//	                .enable(enableSwaggerPlugin)
+//	                .apiInfo(apiInfo());
+//	    }
+//
+//	    private ApiInfo apiInfo() {
+//	        return new ApiInfoBuilder()
+//	                .title("Blog-App API")
+//	                .description("Blog-App Api Documentation")
+//	                .termsOfServiceUrl("http://xyz.com/termsofuse")
+//	                .contact(new Contact("Blog-App", "http://xyz.com", "contact@xyz.com"))
+//	                .license("Copyright XYZ")
+//	                .licenseUrl("http://xyz.com/license")
+//	                .version("1.0")
+//	                .build();
+//	    }
+//
+//}

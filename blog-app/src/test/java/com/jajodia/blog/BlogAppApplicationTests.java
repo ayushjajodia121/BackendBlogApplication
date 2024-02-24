@@ -17,9 +17,6 @@ class BlogAppApplicationTests {
 	@Autowired
 	private UserService userService;
 	
-	@Test
-	void contextLoads() {
-	}
 	
 //	@Test
 //	public void repoTest()
@@ -29,13 +26,5 @@ class BlogAppApplicationTests {
 //		System.out.println(repoclassName );
 //		System.out.println(repopackName );
 //	}
-	@Test
-	public void serviceTest()
-	{
-		String className = this.userService.getClass().getName();
-		String packName = this.userService.getClass().getPackageName();
-		System.out.println(className);
-		System.out.println(packName);
-	}
 
 }

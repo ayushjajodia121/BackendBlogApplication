@@ -9,10 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ApiResponse {
 	
 	private String message;
@@ -26,12 +22,11 @@ public class ApiResponse {
 	public void setTimeOfOccurence(String timeOfException) {
 		this.timeOfOccurence = timeOfException;
 	}
+	
 	public ApiResponse() {
-		super();
 	}
+	
 	public ApiResponse(String message, boolean success) {
-		super();
-		
 		this.message = message;
 		this.success = success;
 		this.timeOfOccurence = ApiResponse.getCurrentTimeUsingDate();
@@ -55,11 +50,6 @@ public class ApiResponse {
 	      System.out.println("Current Date: " + ft.format(dNow));
 	      return ft.format(dNow);
 	}
-	
-//	public static void getCurrentDate() {
-//		Date date = new Date();
-//		
-//	}
 	
 
 }

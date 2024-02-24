@@ -21,8 +21,8 @@ import com.jajodia.blog.payload.ApiResponse;
 import com.jajodia.blog.payload.UserDto;
 import com.jajodia.blog.service.UserService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/users")
