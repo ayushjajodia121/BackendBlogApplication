@@ -1,8 +1,11 @@
 package com.jajodia.blog.controller;
 
+import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +28,8 @@ import com.jajodia.blog.payload.UserDto;
 import com.jajodia.blog.security.JWTTokenHelper;
 import com.jajodia.blog.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -40,6 +45,9 @@ public class AuthController {
 	
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 	
 	@PostMapping("/login")
 	public ResponseEntity<JWTAuthResponse> createToken(@RequestBody JWTAuthRequest request) throws Exception
@@ -72,8 +80,17 @@ public class AuthController {
 		response.setUserId(userId);
 		response.setUserName(userFullName);
 		return new ResponseEntity<JWTAuthResponse>(response,HttpStatus.OK);
-		
-		
+	}
+
+
+	@PostMapping("/logout")
+	public void logUserOut(HttpServletRequest request) {
+		final String authorizationHeader = request.getHeader("Authorization");
+		String token = authorizationHeader.substring(7);
+		Date expirationDateFromToken = jwtTokenHelper.getExpirationDateFromToken(token);
+		Date currentDate = new Date();
+		long remainingExpiry = expirationDateFromToken.getTime() - currentDate.getTime();
+		redisTemplate.opsForValue().set(token, token, remainingExpiry, TimeUnit.MILLISECONDS);
 	}
 
 
