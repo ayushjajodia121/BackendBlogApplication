@@ -7,7 +7,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jajodia.blog.payload.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +34,9 @@ public class JwtAutenticationFilter extends OncePerRequestFilter{
 	
 	@Autowired
 	private JWTTokenHelper jwtTokenHelper;
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 	
 //	private AuthenticationManagerBuilder authMgrBuilder;
 //	
@@ -46,6 +55,12 @@ public class JwtAutenticationFilter extends OncePerRequestFilter{
 		if(requestToken!=null && requestToken.startsWith("Bearer"))
 		{
 			token = requestToken.substring(7);
+			if(checkIfTokenExistInRedis(token)) {
+				ApiResponse apiResponse = new ApiResponse("forced loggedOut JWT token",false);
+				response.setStatus(HttpStatus.FORBIDDEN.value());
+				response.getWriter().write(convertObjectToJson(apiResponse));
+//				return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+			}
 			try {
 				username=jwtTokenHelper.getUsernameFromToken(token);
 			}
@@ -97,6 +112,18 @@ public class JwtAutenticationFilter extends OncePerRequestFilter{
 //	public void afterSingletonsInstantiated() {
 //	       	this.authenticationManager = authMgrBuilder.getObject();
 //	   }
+
+	private boolean checkIfTokenExistInRedis(String token) {
+		return redisTemplate.hasKey(token);
+	}
+
+	public String convertObjectToJson(Object object) throws JsonProcessingException {
+		if (object == null) {
+			return null;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(object);
+	}
 
 
 }
