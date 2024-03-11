@@ -54,6 +54,7 @@ public class JWTTokenHelper {
 	public String generateToken(UserDetails userDetails)
 	{
 		Map<String, Object> claims = new HashMap<>();
+//		claims.put("userId", userDetails.get )
 		return doGenerateToken(claims,userDetails.getUsername());
 	}
 	

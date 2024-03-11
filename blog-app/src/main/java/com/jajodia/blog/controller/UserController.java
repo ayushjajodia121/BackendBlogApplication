@@ -2,9 +2,13 @@ package com.jajodia.blog.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.jajodia.blog.exception.UserTokenLoggedOutExpiredException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,6 +75,13 @@ public class UserController {
 	public ResponseEntity<UserDto> fetchUserById(@PathVariable int id)
 	{
 		return ResponseEntity.ok(userService.getUserById(id));
+	}
+
+	@GetMapping("/invalidUser")
+	public ResponseEntity<ApiResponse> userLoggedOut() {
+		throw new UserTokenLoggedOutExpiredException("forced loggedOut token used");
+//		ApiResponse apiResponse = new ApiResponse("User has been loggedOut", false, "Date.now()");
+//		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 	}
 	
 
