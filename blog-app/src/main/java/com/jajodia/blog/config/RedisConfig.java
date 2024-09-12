@@ -15,8 +15,8 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
-//    @Value("${redis.host}")
-//    private String host;
+    @Value("${redis.host}")
+    private String host;
 //
 //    @Value("${redis.port}")
 //    private int port;
@@ -30,7 +30,7 @@ public class RedisConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName("localhost");
+        redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(6379);
         redisStandaloneConfiguration.setDatabase(1);
 
@@ -44,6 +44,7 @@ public class RedisConfig {
     RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
     }
 }

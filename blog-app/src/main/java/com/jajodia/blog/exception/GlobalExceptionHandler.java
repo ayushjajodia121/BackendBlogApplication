@@ -39,6 +39,14 @@ public class GlobalExceptionHandler {
 		ApiResponse apiResponse = new ApiResponse(message,false);
 		return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.NOT_ACCEPTABLE);
 	}
+
+	@ExceptionHandler(UserTokenLoggedOutException.class)
+	public ResponseEntity<ApiResponse> 	userTokenLoggedOutExceptionHandler(UserTokenLoggedOutException ex)
+	{
+		String message = ex.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message,false);
+		return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.FORBIDDEN);
+	}
 	
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

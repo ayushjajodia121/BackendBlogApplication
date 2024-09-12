@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jajodia.blog.exception.UserTokenLoggedOutException;
 import com.jajodia.blog.payload.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -55,13 +56,11 @@ public class JwtAutenticationFilter extends OncePerRequestFilter{
 		if(requestToken!=null && requestToken.startsWith("Bearer"))
 		{
 			token = requestToken.substring(7);
-			if(checkIfTokenExistInRedis(token)) {
-				ApiResponse apiResponse = new ApiResponse("forced loggedOut JWT token",false);
-				response.setStatus(HttpStatus.FORBIDDEN.value());
-				response.getWriter().write(convertObjectToJson(apiResponse));
-//				return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
-			}
 			try {
+				if(checkIfTokenExistInRedis(token)) {
+					throw new UserTokenLoggedOutException("forced loggedOut JWT token");
+//				return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+				}
 				username=jwtTokenHelper.getUsernameFromToken(token);
 			}
 			catch(IllegalArgumentException e)
@@ -75,6 +74,11 @@ public class JwtAutenticationFilter extends OncePerRequestFilter{
 			catch(MalformedJwtException e)
 			{
 				System.out.println("invalid jwt");
+			}
+			catch (UserTokenLoggedOutException e) {
+				ApiResponse apiResponse = new ApiResponse(e.getMessage(),false);
+				response.setStatus(HttpStatus.FORBIDDEN.value());
+				response.getWriter().write(convertObjectToJson(apiResponse));
 			}
 			
 		}
